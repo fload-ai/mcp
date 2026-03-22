@@ -4,7 +4,7 @@ Fload is a platform for mobile app publishers. It connects to App Store Connect,
 
 ## Setup
 
-1. Create an API key at [app.fload.app](https://app.fload.app) > Settings > API Keys
+1. Create an API key at [platform.fload.com](https://platform.fload.com/settings/api-keys) > Settings > API Keys
 2. Install the MCP server:
 
 ```json

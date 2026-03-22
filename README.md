@@ -9,7 +9,7 @@ MCP server for Fload — gives AI assistants access to your mobile app analytics
 
 ### 1. Get your API key
 
-Go to [app.fload.app](https://app.fload.app) > Settings > API Keys > Create Key.
+Go to [platform.fload.com](https://platform.fload.com/settings/api-keys) > Settings > API Keys > Create Key.
 
 ### 2. Add to Claude Desktop
 
