@@ -69,20 +69,20 @@ Works with Claude Code, Cursor, Cline, GitHub Copilot, and [18+ other agents](ht
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `FLOAD_API_KEY` | Yes | — | Your API key (`fload_sk_...`) |
-| `FLOAD_API_URL` | No | `https://api.fload.app` | API URL (override for self-hosted) |
+| `FLOAD_API_URL` | No | `https://api.fload.com` | API URL (override for self-hosted) |
 
 Or use `~/.fload/config.json`:
 
 ```json
 {
   "apiKey": "fload_sk_your_key_here",
-  "apiUrl": "https://api.fload.app"
+  "apiUrl": "https://api.fload.com"
 }
 ```
 
 ## What is Fload?
 
-[Fload](https://fload.app) is an AI-powered platform for mobile app publishers. It connects to App Store Connect, Google Play Console, ad platforms (Apple Search Ads, Google Ads, Meta, TikTok), Stripe, and RevenueCat to give you:
+[Fload](https://fload.com) is an AI-powered platform for mobile app publishers. It connects to App Store Connect, Google Play Console, ad platforms (Apple Search Ads, Google Ads, Meta, TikTok), Stripe, and RevenueCat to give you:
 
 - 📊 Unified analytics across all your apps
 - 🤖 AI-powered review management (auto-reply with approval flow)
