@@ -1,95 +1,112 @@
 # @fload-ai/mcp
 
-MCP server for Fload — gives AI assistants access to your mobile app analytics, reviews, growth metrics, and more.
+MCP server for [Fload](https://fload.com) — connects any MCP-compatible AI client (Claude, ChatGPT, Cursor, VS Code, Cline) to your mobile app's App Store Connect / Google Play reviews, metrics, ad campaigns, anomalies, and ASO data.
 
-[![npm version](https://img.shields.io/npm/v/@fload-ai/mcp)](https://www.npmjs.com/package/@fload-ai/mcp)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+37 tools across 10 domains. OAuth 2.1 for remote connections, API key for scripts and CI.
 
-## Quick Start
+## Two ways to connect
 
-### 1. Get your API key
+### Remote (recommended) — OAuth 2.1 via `mcp-remote`
 
-Go to [platform.fload.com](https://platform.fload.com/settings/api-keys) > Settings > API Keys > Create Key.
+For Claude Desktop, Cursor, ChatGPT, and any client that supports remote MCP servers. No API keys to manage, per-organization scoping, revoke anytime from Fload Settings → Connected Apps.
 
-### 2. Add to Claude Desktop
-
-Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS):
+**Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
 
 ```json
 {
   "mcpServers": {
     "fload": {
       "command": "npx",
-      "args": ["-y", "@fload-ai/mcp"],
-      "env": {
-        "FLOAD_API_KEY": "fload_sk_your_key_here"
-      }
+      "args": ["-y", "mcp-remote", "https://api.fload.com/mcp"]
     }
   }
 }
 ```
 
-Restart Claude Desktop. You'll see Fload tools available.
+Restart Claude Desktop. On first use, `mcp-remote` opens a browser for OAuth consent. Pick which Fload organization to share, approve scopes, done.
 
-### 3. Add the Fload skill (optional, recommended)
+**Cursor:** Settings → MCP → Add remote server → `https://api.fload.com/mcp`. Cursor handles Dynamic Client Registration and the consent flow automatically.
 
-The Fload skill teaches your AI agent how to use Fload tools effectively — common workflows, tips, and best practices.
+**ChatGPT (Team / Enterprise):** Admin portal → Connectors → Add custom connector → server URL `https://api.fload.com/mcp`.
 
-```bash
-npx skills add fload-ai/mcp --skill fload
-```
+### Local stdio — API key
 
-Works with Claude Code, Cursor, Cline, GitHub Copilot, and [18+ other agents](https://skills.sh).
+For scripts, CI, headless environments, or anyone who wants a long-lived machine credential. Install this package and point an MCP client at the binary:
+
+1. Create an API key at [platform.fload.com/settings/api-keys](https://platform.fload.com/settings/api-keys).
+
+2. Add to your MCP config:
+
+   ```json
+   {
+     "mcpServers": {
+       "fload": {
+         "command": "npx",
+         "args": ["-y", "@fload-ai/mcp"],
+         "env": {
+           "FLOAD_API_KEY": "fload_sk_your_key_here"
+         }
+       }
+     }
+   }
+   ```
+
+   Or use `~/.fload/config.json`:
+
+   ```json
+   {
+     "apiKey": "fload_sk_your_key_here",
+     "apiUrl": "https://api.fload.com"
+   }
+   ```
+
+## What you can ask your agent
+
+- "Why did iOS installs drop yesterday?"
+- "Draft replies to my last 5 one-star reviews in my brand voice, then approve the good ones."
+- "What's my ROAS across all ad platforms this week?"
+- "Audit my ASO for my top-grossing app and suggest title changes."
+- "List anomalies across my portfolio this week — acknowledge the ones on my dummy app."
 
 ## Tools
 
-| Tool | Description |
-|------|-------------|
-| `list_apps` | List all apps in your organization |
-| `get_app_details` | Get detailed app info by ID or bundle ID |
-| `get_reviews` | Get reviews with filtering (rating, date, platform) |
-| `discover_metrics` | Discover available metrics for an app |
-| `get_metrics` | Query metric timeseries (30+ metrics, multi-dimension) |
-| `discover_dimensions` | Discover breakdown dimensions (country, platform, etc.) |
-| `list_agents` | List AI agents (review, monitoring, growth, etc.) |
-| `get_agent_details` | Get agent config for a specific app |
-| `get_agent_run_history` | Agent execution history |
-| `get_anomalies` | Detected metric anomalies (surges/declines) |
-| `get_ads_performance` | Ad campaign data (ASA, Google, Meta, TikTok) |
-| `get_growth_audit` | Comprehensive growth assessment |
-| `get_growth_score` | 0-100 growth score with grade |
-| `get_forecasts` | Valuation forecasts and trend analysis |
-| `get_dashboard_overview` | Organization portfolio overview |
-| `list_pending_actions` | Pending AI-generated review replies |
-| `approve_action` | Approve a pending review reply |
-| `reject_action` | Reject a pending review reply |
+37 tools grouped by domain. Full list with annotations + scope requirements at [fload.com/docs/mcp](https://fload.com/docs/mcp).
 
-## Configuration
+| Domain | Tools |
+|---|---|
+| Apps | `list_apps`, `get_app_details` |
+| Reviews | `get_reviews`, `generate_review_reply`, `send_review_reply`, `translate_review` |
+| Analytics | `discover_metrics`, `get_metrics`, `discover_dimensions` (30+ metrics, dimensional breakdowns) |
+| Agents | `list_agents`, `get_agent_details`, `get_agent_run_history`, `trigger_agent_run`, `pause_agent`, `resume_agent`, `get_agent_activity` |
+| Anomalies | `get_anomalies`, `get_anomaly_detail`, `acknowledge_anomaly`, `dismiss_anomaly` |
+| Ads | `get_ads_performance` (Apple Search Ads, Google Ads, Meta Ads, TikTok Ads) |
+| ASO | `get_aso_summary`, `get_aso_recommendations`, `get_aso_keywords`, `get_aso_experiments`, `get_aso_locale_snapshots`, `trigger_aso_analysis` |
+| Growth | `get_growth_audit`, `get_growth_score` |
+| Forecasting | `get_forecasts` |
+| Dashboard | `get_dashboard_overview` |
+| Actions | `list_pending_actions`, `approve_action`, `reject_action` |
+| Chat | `list_conversations`, `get_conversation_messages`, `send_chat_message` |
+
+Every tool carries an MCP `readOnlyHint` or `destructiveHint` annotation so clients can surface the scope of each action to users before calling.
+
+## OAuth scopes (remote only)
+
+16 scopes. Agents request the minimum they need; users approve per-scope on the consent screen and can revoke from [platform.fload.com/settings/connected-apps](https://platform.fload.com/settings/connected-apps).
+
+- **OIDC identity:** `openid`, `email`, `profile`, `offline_access`
+- **Reads:** `read:apps`, `read:reviews`, `read:analytics`, `read:anomalies`, `read:ads`, `read:aso`, `read:agents`
+- **Writes:** `write:reviews`, `write:ads`, `write:aso`, `write:agents`, `write:chat`
+
+## Configuration (stdio mode)
 
 | Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `FLOAD_API_KEY` | Yes | — | Your API key (`fload_sk_...`) |
+|---|---|---|---|
+| `FLOAD_API_KEY` | Yes (stdio) | — | API key, format `fload_sk_...` |
 | `FLOAD_API_URL` | No | `https://api.fload.com` | API URL (override for self-hosted) |
 
-Or use `~/.fload/config.json`:
+## Issues & feedback
 
-```json
-{
-  "apiKey": "fload_sk_your_key_here",
-  "apiUrl": "https://api.fload.com"
-}
-```
-
-## What is Fload?
-
-[Fload](https://fload.com) is an AI-powered platform for mobile app publishers. It connects to App Store Connect, Google Play Console, ad platforms (Apple Search Ads, Google Ads, Meta, TikTok), Stripe, and RevenueCat to give you:
-
-- 📊 Unified analytics across all your apps
-- 🤖 AI-powered review management (auto-reply with approval flow)
-- 🚨 Anomaly detection (revenue drops, download spikes, crash surges)
-- 📈 Growth scoring and audits
-- 💰 App valuations and forecasts
-- 📢 Ad performance across all platforms
+File bugs or feature requests at [github.com/fload-ai/mcp/issues](https://github.com/fload-ai/mcp/issues). For integration support: support@fload.com.
 
 ## License
 
