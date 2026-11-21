@@ -1,10 +1,9 @@
-# Fload MCP server (archived repository)
+# Fload MCP
 
-This repository is archived. It was a mirror of the README and is no longer updated.
+This repository moved to [`@fload-ai/mcp` on npm](https://www.npmjs.com/package/@fload-ai/mcp). The skill and the setup guide live there now.
 
-The Fload MCP server is developed in Fload's main repository and published to npm with every release:
+Connect to Fload's MCP server:
 
-- **Package:** [`@fload-ai/mcp` on npm](https://www.npmjs.com/package/@fload-ai/mcp)
-- **Docs:** [fload.com/docs](https://fload.com/docs)
+**Claude Code:** `claude mcp add --transport http --scope user fload https://api.fload.com/mcp`
 
-To use it, follow the setup in the docs, or run `npx -y @fload-ai/mcp`, with an API key from [platform.fload.com](https://platform.fload.com).
+**Claude (desktop and claude.ai):** Settings → Connectors → Add custom connector, name it Fload, URL `https://api.fload.com/mcp`.
