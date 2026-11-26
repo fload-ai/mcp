@@ -4,14 +4,14 @@ description: Use when the user has Fload MCP tools available and asks about mobi
 license: MIT
 metadata:
   author: fload-ai
-  version: '2.3.0'
+  version: '2.4.0'
 ---
 
 # Fload: Mobile App Analytics via MCP
 
 You have Fload's MCP tools. Use them to help the user understand how their apps are doing, manage reviews, track growth and work with Fload's agents.
 
-Connect: `claude mcp add --transport http --scope user fload https://api.fload.com/mcp` in Claude Code. Every other client, and the API key setup: the package README (https://www.npmjs.com/package/@fload-ai/mcp).
+Connect: `claude mcp add --transport http --scope user fload https://api.fload.com/mcp` in Claude Code. In Claude (desktop and claude.ai), [Add Fload to Claude](https://claude.ai/customize/connectors?modal=add-custom-connector&connectorName=Fload&connectorUrl=https%3A%2F%2Fapi.fload.com%2Fmcp) opens Add custom connector with the URL filled in (or Settings → Connectors → Add custom connector). Every other client, and the API key setup: the package README (https://www.npmjs.com/package/@fload-ai/mcp).
 
 ## What Is Fload?
 
@@ -95,7 +95,7 @@ The server gives each tool's name, description and inputs, and tells you at `ini
 ### "What are the agents doing?"
 
 1. `getAgentStatus` for an app's agents, `agent_run_history` and `agent_activity` for what one did.
-2. `getPendingActions` and `getTaskLedger` for the work waiting in the inbox.
+2. `getPendingActions` and `getTaskLedger` for the work waiting in the Inbox. `getPendingActions`' `inProgress` is the work Fload is still doing (a listing being written or checked): relay each entry's words, never as waiting for approval.
 
 ## Older tool names
 
